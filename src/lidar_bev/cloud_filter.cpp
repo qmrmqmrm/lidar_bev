@@ -382,7 +382,7 @@ void CloudFilter::initMaxPointsMap(int grid_dim, float cell_size, float z_min, f
     python_cmd << " --velo_height " << velo_h.str();
     std::cout << "Required max_points map not found, creating map..." << std::endl;
     std::cout << python_cmd.str() << std::endl;
-    system(python_cmd.str().c_str());
+    // system(python_cmd.str().c_str());
 
     // Resize the matrix
     int grid_cells = grid_dim / cell_size;

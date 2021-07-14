@@ -160,6 +160,7 @@ int main(int argc, char **argv){
     bool remove_floor;
 
     string package_dir = ros::package::getPath("lidar_bev");
+    string a2d2_dir = "/home/ri-1080/work2/a2d2_to_kitti/data";
 	string kitti_dir;
     string split_dir;
     string saving_path;
@@ -210,7 +211,8 @@ int main(int argc, char **argv){
     std::map<ros::Time, tf::StampedTransform> tf_map;
 
     struct dirent *entry;
-    string calib_dir = package_dir + "/" + kitti_dir + "/" + split_dir+ "/calib/";
+    // string calib_dir = package_dir + "/" + kitti_dir + "/" + split_dir+ "/calib/";
+    string calib_dir = a2d2_dir + "/" + split_dir+ "/calib/";
     cout << calib_dir << endl;
     DIR *dir = opendir(calib_dir.c_str());
 
@@ -219,22 +221,26 @@ int main(int argc, char **argv){
         cout << strerror(errno)<<endl;
         return 1;
     }
-
+    printf("start calib");
     // Parse all calibration files and build corresponding map
     int tfcount = 0;
     while ((entry = readdir(dir)) != NULL) {
         string file_name = calib_dir + entry->d_name;
+        // cout << file_name<< endl;
         tf::Transform velo2cam = read_calib(file_name);
 
         string frame_num = file_name.erase(0, file_name.find_last_of("/") + 1);
         frame_num.erase(frame_num.find_last_of("."), string::npos);
-        if (frame_num.length() != 6){
+        printf("%d",frame_num);
+        if (frame_num.length() < 6){
             continue;
         }
+        cout<<frame_num<<endl;
 
         tf::StampedTransform tf_transform(velo2cam, ros::Time(stoi(frame_num)), "stereo_camera", "velodyne");
         tf_map[tf_transform.stamp_] = tf_transform;
         ++tfcount;
+        cout <<tfcount<<endl;
     }
 
     if (tfcount == 0){
@@ -258,7 +264,7 @@ int main(int argc, char **argv){
     channel_names.push_back("avg_intensity");
 
     int frames = 0;
-    string velo_dir = package_dir + "/" + kitti_dir + "/" + split_dir + "/velodyne/";
+    string velo_dir = a2d2_dir+ "/" + split_dir + "/velodyne/";
     // cout << velo_dir << endl;
     DIR *dir_velo= opendir(velo_dir.c_str());
     while ((entry = readdir(dir_velo)) != NULL) {
@@ -267,7 +273,7 @@ int main(int argc, char **argv){
 
         string frame_num = pc_dir.erase(0, pc_dir.find_last_of("/") + 1);
         frame_num.erase(frame_num.find_last_of("."), string::npos);
-        if (frame_num.length() != 6){
+        if (frame_num.length() < 6){
             continue;
         }
 
@@ -328,7 +334,7 @@ int main(int argc, char **argv){
             int w_pixels = (grid_max_y-grid_min_y)/cell_size;
 
             int x_min = x_max - h_pixels;
-
+            printf("y_min : %d, x_min : %d, w_pixels : %d, h_pixels : %d",y_min, x_min, w_pixels, h_pixels);
             final_birdview = final_birdview(cv::Rect(y_min, x_min, w_pixels, h_pixels));
 
             if(get_ground){
@@ -392,7 +398,7 @@ int main(int argc, char **argv){
                     cv::imwrite(saving_absolute.str(), channels[i]);
                 }
             }
-            cout << "Finished processing frame " <<  frame_num << endl;
+            cout << "Finished processing frame : " <<  frame_num << "\nTotal number of frames :"<< frames << endl;
 
             // Increase index
             final_birdview.release();

@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-
+#!/home/ri-1080/.pyenv/versions/ros_py36/bin/python
 # max_points_map.py: Script for offline estimation of the ground position (BirdNet 1 only)
 
 import numpy as np
@@ -28,8 +27,8 @@ def get_max_points_map(bv_size, cell_size, z_min, z_max, nslices, nplanes, low_a
 
     bar = IncrementalBar('Processing', max=int(grid_size/2), suffix='%(percent).1f%% - Estimated time: %(eta)ds')
 
-    for i in xrange(0, int(grid_size/2)):  # i -> row (y-axis velo plane / x-axis image plane)
-        for j in xrange(0, i+1): # j -> col (x-axis velo plane / y-axis image plane)
+    for i in range(0, int(grid_size/2)):  # i -> row (y-axis velo plane / x-axis image plane)
+        for j in range(0, i+1): # j -> col (x-axis velo plane / y-axis image plane)
             # Compute plane coords
             x_min = cell_size * j
             x_max = cell_size * (j + 1)
@@ -49,7 +48,7 @@ def get_max_points_map(bv_size, cell_size, z_min, z_max, nslices, nplanes, low_a
             #         max_map[int(grid_size/2)][int(grid_size/2)-1][k]=nplanes*num_hor_rays
 
             # else:
-            for p in xrange(0, nplanes):
+            for p in range(0, nplanes):
                 current_hangle = min_angle
                 current_vngle = lowrad_angle + p * vrad_res
 
@@ -64,7 +63,7 @@ def get_max_points_map(bv_size, cell_size, z_min, z_max, nslices, nplanes, low_a
                     z = lidar_height + np.sin(current_vngle)*distance_3d
 
                     z_slice = (z_max - z_min) / nslices
-                    for k in xrange(0, nslices):
+                    for k in range(0, nslices):
                         if k*z_slice < z <= (k+1)*z_slice:
                             # Increment corresponding cell
                             max_map[int(grid_size/2)-1-j][int(grid_size/2)-1-i][k]+=1
@@ -90,7 +89,7 @@ def get_max_points_map(bv_size, cell_size, z_min, z_max, nslices, nplanes, low_a
                     z = lidar_height + np.sin(current_vngle)*distance_3d
 
                     z_slice = (z_max - z_min) / nslices
-                    for k in xrange(0, nslices):
+                    for k in range(0, nslices):
                         if k*z_slice < z <= (k+1)*z_slice:
                             max_map[int(grid_size/2)-1-j][int(grid_size/2)-1-i][k]+=1
                             max_map[int(grid_size/2)-1-j][int(grid_size/2)+i][k]+=1

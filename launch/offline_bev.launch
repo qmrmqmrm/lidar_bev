@@ -1,7 +1,7 @@
 <launch>
-    <arg name="kitti_dir" default="kitti" />
+    <arg name="dataset_dir" default="a2d2" />
     <arg name="split_dir" default="training" />
-    <arg name="saving_path" default="bev_images" />
+    <arg name="saving_path" default="a2d2_bev_images" />
 
     <arg name="camera_fov" default="110.0" />
     <arg name="planes" default="64" />
@@ -11,7 +11,7 @@
     <arg name="cell_size" default="0.05" />
     <arg name="grid_dim" default="140" />
     <arg name="grid_min_x" default="0" />
-    <arg name="grid_max_x" default="70" />
+    <arg name="grid_max_x" default="35" />
     <arg name="grid_min_y" default="-35" />
     <arg name="grid_max_y" default="35" />
     <arg name="max_height" default="3.0" />
@@ -24,7 +24,7 @@
     <arg name="remove_floor" default="false" />
 
     <node pkg="lidar_bev" type="offline_bev" name="offline_bev" output="screen">
-        <param name="kitti_dir" value="$(arg kitti_dir)"/>
+        <param name="kitti_dir" value="$(arg dataset_dir)"/>
         <param name="split_dir" value="$(arg split_dir)"/>
         <param name="saving_path" value="$(arg saving_path)"/>
         <param name="camera_fov" value="$(arg camera_fov)"/>
